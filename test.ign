@@ -1,0 +1,1 @@
+{"ignition":{"version":"3.1.0"},"passwd":{"users":[{"groups":["wheel"],"homeDir":"/home/joe","name":"joe","passwordHash":"$y$j9T$he/M2HTJFb1Qv5Jw9iQq/1$har8VkVOvtXs0ccfwyHfNZSD3lZ8gWUBPZ/QWIyb6N0","sshAuthorizedKeys":["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINMlyPjoTaGAhEYE1+jnlIYgPbXfP7bkHap7NgEvvZ2p"],"shell":"/bin/bash"}]}}
