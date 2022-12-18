@@ -1,5 +1,5 @@
 variant: fcos
-version: 1.1.0
+version: 1.4.0
 passwd:
   users:
     - name: joe
@@ -10,3 +10,7 @@ passwd:
       groups:
         - wheel
       shell: /bin/bash
+storage:
+  links:
+    - path: /etc/localtime
+      target: ../usr/share/zoneinfo/America/Chicago
