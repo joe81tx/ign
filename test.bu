@@ -14,3 +14,18 @@ storage:
   links:
     - path: /etc/localtime
       target: ../usr/share/zoneinfo/America/Chicago
+systemd:
+  units:
+        [Install]
+        WantedBy=multi-user.target
+    - name: homeassistant.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Home Assitant and Watch Tower Docker containers
+        After=network-online.target
+        Wants=network-online.target
+
+        [Service]
+        ExecStart=/bin/podman run -d --name homeassistant --privileged --restart=unless-stopped -e TZ=America/Chicago --network=host ghcr.io/home-assistant/home-assistant:stable
+        ExecStart=/bin/podman run -d --name watchtower -v /var/run/docker.sock:/var/run/docker.sock -v /etc/localtime:/etc/localtime:ro --cleanup --schedule "0 0 5 * * *" containrrr/watchtower
