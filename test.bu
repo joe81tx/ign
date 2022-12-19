@@ -9,6 +9,7 @@ passwd:
       home_dir: /home/joe
       groups:
         - wheel
+        - docker
       shell: /bin/bash
 storage:
   links:
