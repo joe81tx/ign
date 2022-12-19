@@ -40,7 +40,7 @@ systemd:
         [Service]
         Type=oneshot
         RemainAfterExit=yes
-        ExecStart=/usr/bin/docker run -d --name homeassistant --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago ghcr.io/home-assistant/home-assistant:stable
+        ExecStart=/usr/bin/docker run -d --name homeassistant --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /home/joe/.docker/config:/config ghcr.io/home-assistant/home-assistant:stable
         ExecStart=/usr/bin/docker run -d --name watchtower --privileged -v /var/run/docker.sock:/var/run/docker.sock -v /etc/localtime:/etc/localtime:ro -e WATCHTOWER_SCHEDULE="0 0 5 * * *" -e WATCHTOWER_CLEANUP="true" containrrr/watchtower
 
         [Install]
