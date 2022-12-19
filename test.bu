@@ -73,5 +73,3 @@ systemd:
         WantedBy=multi-user.target
     - name: docker.service
       enabled: true
-    - name: homeassistant.service
-      enabled: false
