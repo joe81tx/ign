@@ -14,6 +14,18 @@ storage:
   links:
     - path: /etc/localtime
       target: ../usr/share/zoneinfo/America/Chicago
+  files:
+    - path: /etc/zincati/config.d/55-updates-strategy.toml
+      contents:
+        inline: |
+          [updates]
+          strategy = "periodic"
+          [updates.periodic]
+          time_zone = "America/Chicago"
+          [[updates.periodic.window]]
+          days = [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ]
+          start_time = "05:40"
+          length_minutes = 10
 systemd:
   units:
     - name: homeassistant.service
@@ -25,8 +37,36 @@ systemd:
         Wants=network-online.target
 
         [Service]
+        Type=oneshot
+        RemainAfterExit=yes
         ExecStart=/bin/podman run -d --name homeassistant --privileged --restart=unless-stopped -e TZ=America/Chicago --network=host ghcr.io/home-assistant/home-assistant:stable
         ExecStart=/bin/podman run -d --name watchtower -v /var/run/docker.sock:/var/run/docker.sock -v /etc/localtime:/etc/localtime:ro --cleanup --schedule "0 0 5 * * *" containrrr/watchtower
+
+        [Install]
+        WantedBy=multi-user.target
+        
+      # Installing butane as a layered package with rpm-ostree
+      - name: rpm-ostree-install-butane.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Layer butane with rpm-ostree
+        Wants=network-online.target
+        After=network-online.target
+        # We run before `zincati.service` to avoid conflicting rpm-ostree
+        # transactions.
+        Before=zincati.service
+        ConditionPathExists=!/var/lib/%N.stamp
+
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        # `--allow-inactive` ensures that rpm-ostree does not return an error
+        # if the package is already installed. This is useful if the package is
+        # added to the root image in a future Fedora CoreOS release as it will
+        # prevent the service from failing.
+        ExecStart=/usr/bin/rpm-ostree install --apply-live --allow-inactive butane
+        ExecStart=/bin/touch /var/lib/%N.stamp
 
         [Install]
         WantedBy=multi-user.target
