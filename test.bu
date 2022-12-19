@@ -46,8 +46,8 @@ systemd:
         [Install]
         WantedBy=multi-user.target
         
-      # Installing butane as a layered package with rpm-ostree
-      - name: rpm-ostree-install-butane.service
+    # Installing butane as a layered package with rpm-ostree
+    - name: rpm-ostree-install-butane.service
       enabled: true
       contents: |
         [Unit]
@@ -71,3 +71,5 @@ systemd:
 
         [Install]
         WantedBy=multi-user.target
+    - name: docker.service
+      enabled: true
