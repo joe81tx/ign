@@ -27,6 +27,12 @@ storage:
           days = [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ]
           start_time = "05:40"
           length_minutes = 10
+    - path: /etc/systemd/system/podman-auto-update.timer.d/override.conf
+      contents:
+        inline: |
+          [Timer]
+          OnCalendar=*-*-* 05:00:00
+          RandomizedDelaySec=0
 systemd:
   units:
     - name: var-mnt-ha_config.mount
@@ -49,14 +55,16 @@ systemd:
       enabled: true
       contents: |
         [Unit]
-        Description=Home Assitant and Watch Tower Docker containers
+        Description=Home Assitant container
         After=network-online.target
         Wants=network-online.target
 
         [Service]
         Type=oneshot
         RemainAfterExit=no
-        ExecStart=/usr/bin/docker run -d --name homeassistant --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /var/mnt/ha_config:/config --label "io.containers.autoupdate=registry" ghcr.io/home-assistant/home-assistant:stable
+        ExecStart=/usr/bin/podman run -d --name homeassistant --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /var/mnt/ha_config:/config --label "io.containers.autoupdate=registry" ghcr.io/home-assistant/home-assistant:stable
 
         [Install]
         WantedBy=multi-user.target
+    - name: podman-auto-update.timer.service
+      enabled: true
