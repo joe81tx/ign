@@ -15,6 +15,9 @@ storage:
   links:
     - path: /etc/localtime
       target: ../usr/share/zoneinfo/America/Chicago
+  directories:
+  - path: /home/joe/ha_config
+    overwrite: true
   files:
     - path: /etc/zincati/config.d/55-updates-strategy.toml
       contents:
@@ -64,7 +67,7 @@ systemd:
         ExecStartPre=/usr/bin/podman kill homeassistant
         ExecStartPre=/usr/bin/podman rm homeassistant
         ExecStartPre=/usr/bin/podman pull ghcr.io/home-assistant/home-assistant:stable
-        ExecStart=/usr/bin/podman run -d --name homeassistant --label io.containers.autoupdate=registry --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /var/mnt/ha_config:/config ghcr.io/home-assistant/home-assistant:stable
+        ExecStart=/usr/bin/podman run -d --name homeassistant --label io.containers.autoupdate=registry --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /home/joe/ha_config:/config ghcr.io/home-assistant/home-assistant:stable
         ExecStop=/usr/bin/podman stop homeassistant
         
         [Install]
