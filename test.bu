@@ -29,47 +29,39 @@ storage:
           length_minutes = 10
 systemd:
   units:
-    - name: homeassistant.service
+    - name: var-mnt-ha_config.mount
       enabled: true
       contents: |
         [Unit]
-        Description=Home Assitant and Watch Tower Docker containers
+        Description=Mount Home Assistant config directory
         After=network-online.target
         Wants=network-online.target
-
-        [Service]
-        Type=oneshot
-        RemainAfterExit=no
-        ExecStart=/usr/bin/docker run -d --name homeassistant --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /home/joe/.homeassistant/config:/config ghcr.io/home-assistant/home-assistant:stable
-        ExecStart=/usr/bin/docker run -d --name watchtower --privileged -v /var/run/docker.sock:/var/run/docker.sock -v /etc/localtime:/etc/localtime:ro -e WATCHTOWER_SCHEDULE="0 0 5 * * *" -e WATCHTOWER_CLEANUP="true" containrrr/watchtower
+        
+        [Mount]
+        What=//192.168.1.31/ha_config
+        Where=/var/mnt/ha_config
+        Options=username=kodi,password=K0d!,rw,uid=1001
+        Type=cifs
 
         [Install]
         WantedBy=multi-user.target
         
-    # Installing butane as a layered package with rpm-ostree
-    - name: rpm-ostree-install-butane.service
+    - name: homeassistant.service
       enabled: true
       contents: |
         [Unit]
-        Description=Layer butane with rpm-ostree
-        Wants=network-online.target
+        Description=Home Assistant and Watch Tower Docker containers
         After=network-online.target
-        # We run before `zincati.service` to avoid conflicting rpm-ostree
-        # transactions.
-        Before=zincati.service
-        ConditionPathExists=!/var/lib/%N.stamp
+        Wants=network-online.target
 
         [Service]
         Type=oneshot
-        RemainAfterExit=yes
-        # `--allow-inactive` ensures that rpm-ostree does not return an error
-        # if the package is already installed. This is useful if the package is
-        # added to the root image in a future Fedora CoreOS release as it will
-        # prevent the service from failing.
-        ExecStart=/usr/bin/rpm-ostree install --apply-live --allow-inactive butane
-        ExecStart=/bin/touch /var/lib/%N.stamp
-
+        ExecStart=/usr/bin/docker run -d --name homeassistant --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /var/mnt/ha_config:/config ghcr.io/home-assistant/home-assistant:stable
+        ExecStart=/usr/bin/docker run -d --name watchtower --privileged -v /var/run/docker.sock:/var/run/docker.sock -v /etc/localtime:/etc/localtime:ro -e WATCHTOWER_SCHEDULE="0 0 5 * * *" -e WATCHTOWER_CLEANUP="true" containrrr/watchtower
+        RemainAfterExit=no
+        
         [Install]
         WantedBy=multi-user.target
+        
     - name: docker.service
       enabled: true
