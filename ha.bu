@@ -66,5 +66,5 @@ systemd:
 
         [Install]
         WantedBy=multi-user.target
-    - name: podman-auto-update.timer.service
+    - name: podman-auto-update.timer
       enabled: true
