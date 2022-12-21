@@ -65,7 +65,7 @@ systemd:
         ExecStartPre=-/bin/podman kill homeassistant
         ExecStartPre=-/bin/podman rm homeassistant
         ExecStartPre=/bin/podman pull ghcr.io/home-assistant/home-assistant:stable
-        ExecStart=/usr/bin/podman run -d --name homeassistant --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /var/mnt/ha_config:/config --label "io.containers.autoupdate=registry" ghcr.io/home-assistant/home-assistant:stable
+        ExecStart=/usr/bin/podman run -d --name homeassistant --label "io.containers.autoupdate=registry" --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /var/mnt/ha_config:/config ghcr.io/home-assistant/home-assistant:stable
 
         [Install]
         WantedBy=multi-user.target
