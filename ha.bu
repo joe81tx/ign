@@ -60,8 +60,6 @@ systemd:
         Wants=network-online.target
 
         [Service]
-        Type=oneshot
-        RemainAfterExit=no
         ExecStartPre=-/bin/podman kill homeassistant
         ExecStartPre=-/bin/podman rm homeassistant
         ExecStartPre=/bin/podman pull ghcr.io/home-assistant/home-assistant:stable
