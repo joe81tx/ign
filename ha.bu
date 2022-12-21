@@ -60,7 +60,6 @@ systemd:
         Wants=network-online.target
 
         [Service]
-        Restart=on-failure
         RemainAfterExit=yes
         ExecStartPre=/usr/bin/podman kill homeassistant
         ExecStartPre=/usr/bin/podman rm homeassistant
