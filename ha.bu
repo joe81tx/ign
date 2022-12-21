@@ -55,18 +55,18 @@ systemd:
       enabled: true
       contents: |
         [Unit]
-        Description=Home Assitant podman container
+        Description=Home Assistant podman container
         After=network-online.target
         Wants=network-online.target
 
         [Service]
         Restart=on-failure
         RemainAfterExit=yes
-        ExecStartPre=-/bin/podman kill homeassistant
-        ExecStartPre=-/bin/podman rm homeassistant
-        ExecStartPre=/bin/podman pull ghcr.io/home-assistant/home-assistant:stable
+        ExecStartPre=/usr/bin/podman kill homeassistant
+        ExecStartPre=/usr/bin/podman rm homeassistant
+        ExecStartPre=/usr/bin/podman pull ghcr.io/home-assistant/home-assistant:stable
         ExecStart=/usr/bin/podman run -d --name homeassistant --label io.containers.autoupdate=registry --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /var/mnt/ha_config:/config ghcr.io/home-assistant/home-assistant:stable
-        ExecStope-/bin/podman stop homeassistant
+        ExecStope=/usr/bin/podman stop homeassistant
         
         [Install]
         WantedBy=multi-user.target
