@@ -46,7 +46,7 @@ systemd:
         [Mount]
         What=//192.168.1.31/ha_config
         Where=/var/mnt/ha_config
-        Options=username=kodi,password=K0d!,rw
+        Options=username=kodi,password=K0d!,rw,uid=1001
         Type=cifs
 
         [Install]
