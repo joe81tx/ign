@@ -1,0 +1,47 @@
+variant: fcos
+version: 1.4.0
+passwd:
+  users:
+    - name: joe
+      ssh_authorized_keys:
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINMlyPjoTaGAhEYE1+jnlIYgPbXfP7bkHap7NgEvvZ2p
+      password_hash: $y$j9T$he/M2HTJFb1Qv5Jw9iQq/1$har8VkVOvtXs0ccfwyHfNZSD3lZ8gWUBPZ/QWIyb6N0
+      home_dir: /home/joe
+      groups:
+        - wheel
+        - docker
+      shell: /bin/bash
+storage:
+  links:
+    - path: /etc/localtime
+      target: ../usr/share/zoneinfo/America/Chicago
+  files:
+    - path: /etc/zincati/config.d/55-updates-strategy.toml
+      contents:
+        inline: |
+          [updates]
+          strategy = "periodic"
+          [updates.periodic]
+          time_zone = "America/Chicago"
+          [[updates.periodic.window]]
+          days = [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ]
+          start_time = "05:40"
+          length_minutes = 10
+systemd:
+  units:
+    - name: homeassistant.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Home Assitant and Watch Tower Docker containers
+        After=network-online.target
+        Wants=network-online.target
+
+        [Service]
+        Type=oneshot
+        RemainAfterExit=no
+        ExecStart=/usr/bin/docker run -d --name homeassistant --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /home/joe/.homeassistant/config:/config ghcr.io/home-assistant/home-assistant:stable
+        ExecStart=/usr/bin/docker run -d --name watchtower --privileged -v /var/run/docker.sock:/var/run/docker.sock -v /etc/localtime:/etc/localtime:ro -e WATCHTOWER_SCHEDULE="0 0 5 * * *" -e WATCHTOWER_CLEANUP="true" containrrr/watchtower
+
+        [Install]
+        WantedBy=multi-user.target
