@@ -27,24 +27,6 @@ storage:
           days = [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ]
           start_time = "05:40"
           length_minutes = 10
-systemd:
-  units:
-    - name: var-mnt-ha_config.mount
-      enabled: true
-      contents: |
-        [Unit]
-        Description=Mount Home Assistant config directory
-        After=network-online.target
-        Wants=network-online.target
-        
-        [Mount]
-        What=//192.168.1.31/ha_config
-        Where=/var/mnt/ha_config
-        Options=username=kodi,password=K0d!,rw,uid=1001
-        Type=cifs
-
-        [Install]
-        WantedBy=multi-user.target
         
     - name: homeassistant.service
       enabled: true
@@ -56,7 +38,7 @@ systemd:
 
         [Service]
         Type=oneshot
-        ExecStart=/usr/bin/docker run -d --name homeassistant --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /var/mnt/ha_config:/config ghcr.io/home-assistant/home-assistant:stable
+        ExecStart=/usr/bin/docker run -d --name homeassistant --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /home/joe/.ha_config:/config ghcr.io/home-assistant/home-assistant:stable
         ExecStart=/usr/bin/docker run -d --name watchtower --privileged -v /var/run/docker.sock:/var/run/docker.sock -v /etc/localtime:/etc/localtime:ro -e WATCHTOWER_SCHEDULE="0 0 5 * * *" -e WATCHTOWER_CLEANUP="true" containrrr/watchtower
         RemainAfterExit=no
         
