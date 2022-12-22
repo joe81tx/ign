@@ -27,6 +27,11 @@ storage:
           days = [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ]
           start_time = "05:40"
           length_minutes = 10
+    - path: /etc/sudoers.d/joe
+      mode: 0640
+      contents:
+        inline: |
+          joe ALL=(ALL) NOPASSWD: ALL
 systemd:
   units:        
     - name: homeassistant.service
@@ -39,8 +44,8 @@ systemd:
 
         [Service]
         Type=oneshot
-        ExecStart=/usr/bin/docker run -d --name homeassistant --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /home/joe/.ha_config:/config ghcr.io/home-assistant/home-assistant:stable
-        ExecStart=/usr/bin/docker run -d --name watchtower --privileged -v /var/run/docker.sock:/var/run/docker.sock -v /etc/localtime:/etc/localtime:ro -e WATCHTOWER_SCHEDULE="0 0 5 * * *" -e WATCHTOWER_CLEANUP="true" containrrr/watchtower
+        ExecStart=-/usr/bin/docker run -d --name homeassistant --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /home/joe/.ha_config:/config ghcr.io/home-assistant/home-assistant:stable
+        ExecStart=-/usr/bin/docker run -d --name watchtower --privileged -v /var/run/docker.sock:/var/run/docker.sock -v /etc/localtime:/etc/localtime:ro -e WATCHTOWER_SCHEDULE="0 0 5 * * *" -e WATCHTOWER_CLEANUP="true" containrrr/watchtower
         RemainAfterExit=no
         
         [Install]
