@@ -34,13 +34,20 @@ storage:
           days = [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ]
           start_time = "05:40"
           length_minutes = 10
+    - path: /etc/sudoers.d/joe
+      mode: 0640
+      contents:
+        inline: |
+          joe ALL=(ALL) NOPASSWD: ALL
     - path: /etc/systemd/system/podman-auto-update.timer.d/override.conf
       contents:
         inline: |
           [Timer]
           OnCalendar=*-*-* 05:00:00
-          RandomizedDelaySec=0        
-    - name: homeassistant.service
+          RandomizedDelaySec=0
+systemd:
+  units:
+  - name: homeassistant.service
       enabled: true
       contents: |
         [Unit]
@@ -50,8 +57,11 @@ storage:
 
         [Service]
         Type=oneshot
-        ExecStart=/usr/bin/podman run -d --name homeassistant --label io.containers.autoupdate=registry --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /home/joe/.ha_config:/config ghcr.io/home-assistant/home-assistant:stable
-        
+        ExecStartPre=-/usr/bin/podman pull ghcr.io/home-assistant/home-assistant:stable
+        ExecStart=-/usr/bin/podman run -d --name homeassistant --label io.containers.autoupdate=registry --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /home/joe/.ha_config:/config:Z ghcr.io/home-assistant/home-assistant:stable
+        ExecStart=-/usr/bin/podman start homeassistant
+        ExecStop=/usr/bin/podman stop homeassistant
+        TimeoutStopSec=10
         [Install]
         WantedBy=multi-user.target
     - name: podman-auto-update.timer
