@@ -47,6 +47,23 @@ storage:
           RandomizedDelaySec=0
 systemd:
   units:
+    - name: homeassistantBoot.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Home Assistant first boot
+        After=network-online.target
+        Wants=network-online.target
+        ConditionFirstBoot=yes
+
+        [Service]
+        Type=oneshot
+        ExecStartPre=-/usr/bin/podman pull ghcr.io/home-assistant/home-assistant:stable
+        ExecStart=-/usr/bin/podman run -d --name homeassistant --label io.containers.autoupdate=registry --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /home/joe/.ha_config:/config:Z ghcr.io/home-assistant/home-assistant:stable
+
+        [Install]
+        WantedBy=multi-user.target
+        
     - name: homeassistant.service
       enabled: true
       contents: |
@@ -56,13 +73,12 @@ systemd:
         Wants=network-online.target
 
         [Service]
-        Type=oneshot
-        ExecStartPre=-/usr/bin/podman pull ghcr.io/home-assistant/home-assistant:stable
-        ExecStartPre=-/usr/bin/podman run -d --name homeassistant --label io.containers.autoupdate=registry --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /home/joe/.ha_config:/config:Z ghcr.io/home-assistant/home-assistant:stable
         ExecStart=-/usr/bin/podman start homeassistant
         ExecStop=/usr/bin/podman stop homeassistant
         TimeoutStopSec=10
+        
         [Install]
         WantedBy=multi-user.target
+        
     - name: podman-auto-update.timer
       enabled: true
