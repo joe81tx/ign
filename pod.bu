@@ -21,6 +21,13 @@ storage:
         name: joe
       target: /home/joe/.config/systemd/user/homeassistant.service
       hard: false
+    - path: /home/joe/.config/systemd/user/timers.target.wants/podman-auto-update.timer
+      user:
+        name: joe
+      group:
+        name: joe
+      target: /usr/lib/systemd/user/podman-auto-update.timer
+      hard: false
   directories:
   - path: /home/joe/.ha_config
     overwrite: true
@@ -70,7 +77,7 @@ storage:
       contents:
         inline: |
           joe ALL=(ALL) NOPASSWD: ALL
-    - path: /etc/systemd/system/podman-auto-update.timer.d/override.conf
+    - path: /home/joe/.config/systemd/user/podman-auto-update.timer.d/override.conf
       contents:
         inline: |
           [Timer]
@@ -123,7 +130,3 @@ storage:
         name: joe
       group:
         name: joe
-systemd:
-  units:  
-    - name: podman-auto-update.timer
-      enabled: true
