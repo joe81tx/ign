@@ -27,7 +27,8 @@ storage:
           days = [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ]
           start_time = "05:40"
           length_minutes = 10
-        
+systemd:
+  units:        
     - name: homeassistant.service
       enabled: true
       contents: |
