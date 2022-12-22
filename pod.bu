@@ -29,37 +29,49 @@ storage:
       target: /usr/lib/systemd/user/podman-auto-update.timer
       hard: false
   directories:
-  - path: /home/joe/.ha_config
-    overwrite: true
-    mode: 0770
-    user:
-      name: joe
-    group:
-      name: joe
-  - path: /home/joe/.config
-    mode: 0755
-    user:
-      name: joe
-    group:
-      name: joe
-  - path: /home/joe/.config/systemd
-    mode: 0755
-    user:
-      name: joe
-    group:
-      name: joe
-  - path: /home/joe/.config/systemd/user
-    mode: 0755
-    user:
-      name: joe
-    group:
-      name: joe
-  - path: /home/joe/.config/systemd/user/default.target.wants
-    mode: 0755
-    user:
-      name: joe
-    group:
-      name: joe
+    - path: /home/joe/.ha_config
+      overwrite: true
+      mode: 0770
+      user:
+        name: joe
+      group:
+        name: joe
+    - path: /home/joe/.config
+      mode: 0755
+      user:
+        name: joe
+      group:
+        name: joe
+    - path: /home/joe/.config/systemd
+      mode: 0755
+      user:
+        name: joe
+      group:
+        name: joe
+    - path: /home/joe/.config/systemd/user
+      mode: 0755
+      user:
+        name: joe
+      group:
+        name: joe
+    - path: /home/joe/.config/systemd/user/default.target.wants
+      mode: 0755
+      user:
+        name: joe
+      group:
+        name: joe
+    - path: /home/joe/.config/systemd/user/timers.target.wants
+      mode: 0755
+      user:
+        name: joe
+      group:
+        name: joe
+    - path: /home/joe/.config/systemd/user/podman-auto-update.timer.d
+      mode: 0755
+      user:
+        name: joe
+      group:
+        name: joe
   files:
     - path: /etc/zincati/config.d/55-updates-strategy.toml
       contents:
@@ -78,11 +90,16 @@ storage:
         inline: |
           joe ALL=(ALL) NOPASSWD: ALL
     - path: /home/joe/.config/systemd/user/podman-auto-update.timer.d/override.conf
+      mode: 0644
       contents:
         inline: |
           [Timer]
           OnCalendar=*-*-* 05:00:00
           RandomizedDelaySec=0
+      user:
+        name: joe
+      group:
+        name: joe
     - path: /var/lib/systemd/linger/joe
       mode: 0644
     - path: /home/joe/.config/systemd/user/homeassistant.service
