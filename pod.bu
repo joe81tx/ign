@@ -47,7 +47,7 @@ storage:
           RandomizedDelaySec=0
 systemd:
   units:
-  - name: homeassistant.service
+    - name: homeassistant.service
       enabled: true
       contents: |
         [Unit]
@@ -58,7 +58,7 @@ systemd:
         [Service]
         Type=oneshot
         ExecStartPre=-/usr/bin/podman pull ghcr.io/home-assistant/home-assistant:stable
-        ExecStart=-/usr/bin/podman run -d --name homeassistant --label io.containers.autoupdate=registry --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /home/joe/.ha_config:/config:Z ghcr.io/home-assistant/home-assistant:stable
+        ExecStartPre=-/usr/bin/podman run -d --name homeassistant --label io.containers.autoupdate=registry --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /home/joe/.ha_config:/config:Z ghcr.io/home-assistant/home-assistant:stable
         ExecStart=-/usr/bin/podman start homeassistant
         ExecStop=/usr/bin/podman stop homeassistant
         TimeoutStopSec=10
