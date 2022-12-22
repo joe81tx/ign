@@ -56,6 +56,7 @@ systemd:
         Wants=network-online.target
 
         [Service]
+        User=joe
         ExecStart=/usr/bin/podman run -d --name homeassistant --label io.containers.autoupdate=registry --privileged --restart=unless-stopped --network=host -e TZ=America/Chicago -v /home/joe/.ha_config:/config:Z ghcr.io/home-assistant/home-assistant:stable
 
         [Install]
