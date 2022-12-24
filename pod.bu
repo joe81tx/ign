@@ -14,8 +14,8 @@ storage:
   links:
     - path: /etc/localtime
       target: ../usr/share/zoneinfo/America/Chicago
-    - path: /dev/null
-      target: /etc/motd.d/tracker.motd
+    - path: /etc/motd.d/tracker.motd
+      target: /dev/null
     - path: /home/joe/.config/systemd/user/default.target.wants/homeassistant.service
       user:
         name: joe
