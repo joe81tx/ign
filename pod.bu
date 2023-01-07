@@ -105,6 +105,11 @@ storage:
         name: joe
     - path: /var/lib/systemd/linger/joe
       mode: 0644
+    - path: /etc/ssh/sshd_config.d/20-enable-passwords.conf
+      mode: 0644
+      contents:
+        inline: |
+          PasswordAuthentication yes
     - path: /home/joe/.config/systemd/user/homeassistant.service
       mode: 0644
       contents:
