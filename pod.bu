@@ -9,6 +9,7 @@ passwd:
       home_dir: /home/joe
       groups:
         - wheel
+        - dialout
       shell: /bin/bash
 storage:
   links:
@@ -138,6 +139,8 @@ storage:
             --privileged \
             --network=host \
             -e TZ=America/Chicago \
+            --device /dev/ttyUSB0:/dev/ttyUSB0 \
+            --group-add keep-groups \
             -v /home/joe/.ha_config:/config:Z ghcr.io/home-assistant/home-assistant:stable
           ExecStop=/usr/bin/podman stop \
             --ignore -t 10 \
