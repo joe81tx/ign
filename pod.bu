@@ -143,7 +143,7 @@ storage:
             --privileged \
             --network=host \
             -e TZ=America/Chicago \
-            --device /dev/ttyUSB0:/dev/ttyUSB0 \
+            --device /dev/serial/by-id/usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_9a6f76d75ed9eb1181a3158e6fe9f4d9-if00-port0:/dev/zigbee:rw \
             --group-add keep-groups \
             -v /home/joe/.ha_config:/config:Z ghcr.io/home-assistant/home-assistant:stable
           ExecStop=/usr/bin/podman stop \
