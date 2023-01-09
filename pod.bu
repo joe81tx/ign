@@ -80,10 +80,11 @@ storage:
       group:
         name: joe
   files:
-    - path: /etc/selinux/targeted/active/booleans.local
-      append:
+    - path: /sys/fs/selinux/booleans/container_use_devices
+      overwrite: true
+      contents:
         inline: |
-          container_use_devices=1
+          1 1
     - path: /etc/zincati/config.d/55-updates-strategy.toml
       contents:
         inline: |
