@@ -76,6 +76,10 @@ storage:
       group:
         name: joe
   files:
+    - path: /etc/group
+      append:
+        inline: |
+          dialout:x:18:
     - path: /etc/zincati/config.d/55-updates-strategy.toml
       contents:
         inline: |
