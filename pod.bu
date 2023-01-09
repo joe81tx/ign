@@ -9,12 +9,7 @@ passwd:
       home_dir: /home/joe
       groups:
         - wheel
-        - dialout
       shell: /bin/bash
-  groups:
-    - name: dialout
-      gid: 18
-      system: true
 storage:
   links:
     - path: /etc/localtime
@@ -115,6 +110,8 @@ storage:
         name: joe
     - path: /var/lib/systemd/linger/joe
       mode: 0644
+    - path: /dev/serial/by-id/usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_9a6f76d75ed9eb1181a3158e6fe9f4d9-if00-port0
+      mode: 0777
     - path: /etc/ssh/sshd_config.d/20-enable-passwords.conf
       mode: 0644
       contents:
@@ -149,7 +146,6 @@ storage:
             --network=host \
             -e TZ=America/Chicago \
             --device /dev/serial/by-id/usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_9a6f76d75ed9eb1181a3158e6fe9f4d9-if00-port0:/dev/zigbee:rw \
-            --group-add keep-groups \
             -v /home/joe/.ha_config:/config:Z ghcr.io/home-assistant/home-assistant:stable
           ExecStop=/usr/bin/podman stop \
             --ignore -t 10 \
