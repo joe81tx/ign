@@ -76,9 +76,22 @@ storage:
         name: joe
   files:
     - path: /etc/group
-      append:
+      overwrite: true
+      contents:
         inline: |
+          root:x:0:
+          adm:x:4:core
+          wheel:x:10:core,joe
+          sudo:x:16:core
+          systemd-journal:x:190:core
+          docker:x:982:
+          core:x:1000:
+          joe:x:1001:
           dialout:x:18:joe
+      user:
+        name: root
+      group:
+        name: root
     - path: /etc/zincati/config.d/55-updates-strategy.toml
       contents:
         inline: |
