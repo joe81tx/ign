@@ -76,10 +76,7 @@ storage:
         name: joe
   files:
     - path: /dev/ttyUSB0
-      user:
-        name: joe      
-      group:
-        name: joe
+      mode: 0777
     - path: /etc/zincati/config.d/55-updates-strategy.toml
       contents:
         inline: |
