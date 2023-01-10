@@ -1,8 +1,6 @@
 variant: fcos
 version: 1.4.0
 passwd:
-  groups:
-    - name: dialout
   users:
     - name: joe
       ssh_authorized_keys:
