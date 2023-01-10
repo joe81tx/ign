@@ -1,6 +1,8 @@
 variant: fcos
 version: 1.4.0
 passwd:
+  groups:
+    - name: dialout
   users:
     - name: joe
       ssh_authorized_keys:
@@ -9,6 +11,7 @@ passwd:
       home_dir: /home/joe
       groups:
         - wheel
+        - dialout
       shell: /bin/bash
 storage:
   links:
@@ -156,3 +159,14 @@ storage:
         name: joe
       group:
         name: joe
+systemd:
+  units:
+    - name: setsebool.service
+      enabled: true
+      contents: |
+        [Service]
+        Type=oneshot
+        ExecStart=setsebool container_use_devices true
+        RemainAfterExit=yes
+        [Install]
+        WantedBy=multi-user.target
