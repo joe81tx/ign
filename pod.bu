@@ -75,11 +75,6 @@ storage:
       group:
         name: joe
   files:
-    - path: /sys/fs/selinux/booleans/container_use_devices
-      overwrite: true
-      contents:
-        inline: |
-          1 1
     - path: /etc/zincati/config.d/55-updates-strategy.toml
       contents:
         inline: |
@@ -110,8 +105,6 @@ storage:
         name: joe
     - path: /var/lib/systemd/linger/joe
       mode: 0644
-    - path: /dev/serial/by-id/usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_9a6f76d75ed9eb1181a3158e6fe9f4d9-if00-port0
-      mode: 0777
     - path: /etc/ssh/sshd_config.d/20-enable-passwords.conf
       mode: 0644
       contents:
