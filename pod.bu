@@ -75,8 +75,10 @@ storage:
       group:
         name: joe
   files:
-    - path: /dev/ttyUSB0
-      mode: 0777
+    - path: /etc/group
+      append:
+        inline: |
+          dialout:x:18:joe
     - path: /etc/zincati/config.d/55-updates-strategy.toml
       contents:
         inline: |
