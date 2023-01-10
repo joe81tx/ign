@@ -9,7 +9,6 @@ passwd:
       home_dir: /home/joe
       groups:
         - wheel
-        - dialout
       shell: /bin/bash
 storage:
   links:
@@ -76,6 +75,8 @@ storage:
       group:
         name: joe
   files:
+    - path: /dev/ttyUSB0
+      mode: 0777
     - path: /etc/zincati/config.d/55-updates-strategy.toml
       contents:
         inline: |
