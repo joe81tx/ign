@@ -126,6 +126,10 @@ storage:
             use_x_forwarded_for: true
             trusted_proxies:
               - 192.168.1.20
+      user:
+        name: joe
+      group:
+        name: joe
     - path: /home/joe/.ha_config/automations.yaml
       contents:
         inline: |
@@ -504,6 +508,10 @@ storage:
               entity_id: switch.hallway_light
               domain: switch
             mode: single
+      user:
+        name: joe
+      group:
+        name: joe
     - path: /etc/udev/rules.d/usb.rules
       contents:
         inline: |
