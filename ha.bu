@@ -2,8 +2,6 @@ variant: fcos
 version: 1.4.0
 passwd:
   users:
-    - name: core
-      password_hash: $y$j9T$qN5t5qzveyAADR/pPCrbs.$MmTJtkUFd0rzhJLcC9uYJfgy6kv7qPWE9tViniHIgn7
     - name: joe
       ssh_authorized_keys:
         - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINMlyPjoTaGAhEYE1+jnlIYgPbXfP7bkHap7NgEvvZ2p
@@ -78,44 +76,13 @@ storage:
     - path: /home/joe/.ha_config/automations.yaml
       contents:
         inline: |
-          - id: '1645463842309'
-            alias: Bathroom Light
-            description: ''
-            trigger:
-            - type: motion
-              platform: device
-              device_id: b9a2aff106a8fa8b35ad264b28ec19e8
-              entity_id: binary_sensor.lumi_lumi_motion_ac02_iaszone_3
-              domain: binary_sensor
-            condition:
-            - condition: state
-              entity_id: input_boolean.bathroomoverride
-              state: 'off'
-            - condition: state
-              entity_id: input_boolean.guest
-              state: 'off'
-            action:
-            - type: toggle
-              device_id: 4392a1196b284f4ab7bfb7bd66c3557a
-              entity_id: switch.bathroom_light
-              domain: switch
-            - delay:
-                hours: 0
-                minutes: 0
-                seconds: 4
-                milliseconds: 0
-            - service: input_boolean.turn_off
-              data: {}
-              target:
-                entity_id: input_boolean.bathroomoverride
-            mode: single
           - id: '1645472367042'
             alias: Bathroom Override
             description: ''
             trigger:
             - platform: device
               type: changed_states
-              device_id: 4392a1196b284f4ab7bfb7bd66c3557a
+              device_id: 23c4174bebb3afee09bc6a6130412708
               entity_id: switch.bathroom_light
               domain: switch
             condition: []
@@ -123,16 +90,16 @@ storage:
             - service: input_boolean.turn_on
               data: {}
               target:
-                entity_id: input_boolean.bathroomoverride
+                entity_id: input_boolean.bathroom_override
             - delay:
                 hours: 0
                 minutes: 0
-                seconds: 10
+                seconds: 15
                 milliseconds: 0
             - service: input_boolean.turn_off
               data: {}
               target:
-                entity_id: input_boolean.bathroomoverride
+                entity_id: input_boolean.bathroom_override
             mode: restart
           - id: '1645484548828'
             alias: Front Door Override
@@ -140,22 +107,22 @@ storage:
             trigger:
             - type: motion
               platform: device
-              device_id: 624f38e010e8402eb7766c5229183d3d
+              device_id: 0f10084e0955aa6839867ecfd37df8a8
               entity_id: binary_sensor.lumi_lumi_motion_ac02_iaszone_2
               domain: binary_sensor
             - type: motion
               platform: device
-              device_id: 2fba86595ad6b28cffbdcac1767f74e8
+              device_id: e3e1fe73e125616a4fb2ba3feaf1a7a3
               entity_id: binary_sensor.lumi_lumi_motion_ac02_iaszone
               domain: binary_sensor
             - type: motion
               platform: device
-              device_id: b9a2aff106a8fa8b35ad264b28ec19e8
+              device_id: 7de37abe9779e350ccc83810a1324690
               entity_id: binary_sensor.lumi_lumi_motion_ac02_iaszone_3
               domain: binary_sensor
             - type: occupied
               platform: device
-              device_id: 2972f884bca49fd056ae759ef42dc035
+              device_id: f1f01f275e9275151f0c877f3c1115ae
               entity_id: binary_sensor.master_bedroom_occupancy
               domain: binary_sensor
             condition:
@@ -167,6 +134,10 @@ storage:
               data: {}
               target:
                 entity_id: input_boolean.leaving
+            - service: timer.cancel
+              data: {}
+              target:
+                entity_id: timer.leaving_timer
             mode: restart
           - id: '1645484762892'
             alias: Front Door Leaving
@@ -174,7 +145,7 @@ storage:
             trigger:
             - type: opened
               platform: device
-              device_id: 927ddb620488d3192952d6d0a5a4b2a4
+              device_id: ff433563899ca42dc9cd94e5c1e9f901
               entity_id: binary_sensor.lumi_lumi_sensor_magnet_aq2_opening
               domain: binary_sensor
             condition:
@@ -189,10 +160,14 @@ storage:
               data: {}
               target:
                 entity_id: input_boolean.leaving
+            - service: timer.cancel
+              data: {}
+              target:
+                entity_id: timer.leaving_timer
             - wait_for_trigger:
               - type: not_opened
                 platform: device
-                device_id: 927ddb620488d3192952d6d0a5a4b2a4
+                device_id: ff433563899ca42dc9cd94e5c1e9f901
                 entity_id: binary_sensor.lumi_lumi_sensor_magnet_aq2_opening
                 domain: binary_sensor
             - service: input_boolean.turn_on
@@ -201,7 +176,7 @@ storage:
                 entity_id: input_boolean.leaving
             - service: timer.start
               data:
-                duration: '45'
+                duration: '60'
               target:
                 entity_id: timer.leaving_timer
             - wait_for_trigger:
@@ -215,25 +190,28 @@ storage:
                 - condition: state
                   entity_id: input_boolean.leaving
                   state: 'on'
+                - condition: state
+                  entity_id: binary_sensor.master_bedroom_occupancy
+                  state: 'off'
                 sequence:
                 - type: turn_off
-                  device_id: 4392a1196b284f4ab7bfb7bd66c3557a
+                  device_id: 23c4174bebb3afee09bc6a6130412708
                   entity_id: switch.bathroom_light
                   domain: switch
                 - type: turn_off
-                  device_id: a32fde61f2cedade5da1bdc8fc2b2309
+                  device_id: 939dbf7a6e80c2808b1e2c3d9384e672
                   entity_id: switch.hallway_light
                   domain: switch
                 - type: turn_off
-                  device_id: 48cd325ca486513b5a9655817770ff5c
+                  device_id: 89cfe047efe68183a60f396fa5fdacce
                   entity_id: switch.kitchen_light
                   domain: switch
                 - type: turn_off
-                  device_id: 2972f884bca49fd056ae759ef42dc035
+                  device_id: f1f01f275e9275151f0c877f3c1115ae
                   entity_id: light.master_bedroom
                   domain: light
                 - type: turn_off
-                  device_id: 76f960dd01916a6256fcc7e3953744f5
+                  device_id: 8a33ea8989656c41f11f80f5d1186560
                   entity_id: remote.bedroom
                   domain: remote
                 - service: input_boolean.turn_on
@@ -247,17 +225,20 @@ storage:
                   entity_id: input_boolean.leaving
                   state: 'on'
                 - condition: device
-                  device_id: 2972f884bca49fd056ae759ef42dc035
+                  device_id: f1f01f275e9275151f0c877f3c1115ae
                   domain: fan
                   entity_id: fan.master_bedroom
                   type: is_on
+                - condition: state
+                  entity_id: binary_sensor.master_bedroom_occupancy
+                  state: 'off'
                 sequence:
                 - service: input_boolean.turn_on
                   data: {}
                   target:
-                    entity_id: input_boolean.fan
+                    entity_id: input_boolean.previous_fan_state
                 - type: turn_off
-                  device_id: 2972f884bca49fd056ae759ef42dc035
+                  device_id: f1f01f275e9275151f0c877f3c1115ae
                   entity_id: fan.master_bedroom
                   domain: fan
               default: []
@@ -272,7 +253,7 @@ storage:
             trigger:
             - type: opened
               platform: device
-              device_id: 927ddb620488d3192952d6d0a5a4b2a4
+              device_id: ff433563899ca42dc9cd94e5c1e9f901
               entity_id: binary_sensor.lumi_lumi_sensor_magnet_aq2_opening
               domain: binary_sensor
             condition:
@@ -284,23 +265,23 @@ storage:
               state: 'off'
             action:
             - type: turn_on
-              device_id: a32fde61f2cedade5da1bdc8fc2b2309
+              device_id: 939dbf7a6e80c2808b1e2c3d9384e672
               entity_id: switch.hallway_light
               domain: switch
             - choose:
               - conditions:
                 - condition: state
-                  entity_id: input_boolean.fan
+                  entity_id: input_boolean.previous_fan_state
                   state: 'on'
                 sequence:
                 - type: turn_on
-                  device_id: 2972f884bca49fd056ae759ef42dc035
+                  device_id: f1f01f275e9275151f0c877f3c1115ae
                   entity_id: fan.master_bedroom
                   domain: fan
                 - service: input_boolean.turn_off
                   data: {}
                   target:
-                    entity_id: input_boolean.fan
+                    entity_id: input_boolean.previous_fan_state
               default: []
             - service: input_boolean.turn_off
               data: {}
@@ -313,13 +294,10 @@ storage:
             trigger:
             - type: motion
               platform: device
-              device_id: 2fba86595ad6b28cffbdcac1767f74e8
+              device_id: e3e1fe73e125616a4fb2ba3feaf1a7a3
               entity_id: binary_sensor.lumi_lumi_motion_ac02_iaszone
               domain: binary_sensor
             condition:
-            - condition: state
-              entity_id: input_boolean.kitchenoverride
-              state: 'off'
             - condition: numeric_state
               entity_id: sun.sun
               attribute: elevation
@@ -327,9 +305,16 @@ storage:
             - condition: state
               entity_id: input_boolean.guest
               state: 'off'
+            - condition: state
+              entity_id: input_boolean.kitchen_override
+              state: 'off'
             action:
+            - service: input_boolean.turn_on
+              data: {}
+              target:
+                entity_id: input_boolean.kitchen_override
             - type: toggle
-              device_id: 48cd325ca486513b5a9655817770ff5c
+              device_id: 89cfe047efe68183a60f396fa5fdacce
               entity_id: switch.kitchen_light
               domain: switch
             - delay:
@@ -340,47 +325,18 @@ storage:
             - service: input_boolean.turn_off
               data: {}
               target:
-                entity_id: input_boolean.kitchenoverride
+                entity_id: input_boolean.kitchen_override
             mode: single
-          - id: '1646764984606'
-            alias: Kitchen Override
-            description: ''
-            trigger:
-            - platform: device
-              type: changed_states
-              device_id: 48cd325ca486513b5a9655817770ff5c
-              entity_id: switch.kitchen_light
-              domain: switch
-            condition:
-            - condition: numeric_state
-              entity_id: sun.sun
-              attribute: elevation
-              below: 9
-            action:
-            - service: input_boolean.turn_on
-              data: {}
-              target:
-                entity_id: input_boolean.kitchenoverride
-            - delay:
-                hours: 0
-                minutes: 0
-                seconds: 10
-                milliseconds: 0
-            - service: input_boolean.turn_off
-              data: {}
-              target:
-                entity_id: input_boolean.kitchenoverride
-            mode: restart
           - id: '1653545861324'
             alias: Button 1
             description: ''
             trigger:
-            - device_id: fe3f6c796067284941b4104bcb29dd18
+            - device_id: e7b439d9a828ba025f4d29b3fe42e248
               domain: zha
               platform: device
               type: remote_button_short_press
               subtype: remote_button_short_press
-            - device_id: 108729705d0f7b14b7ba6e7e1cb434ff
+            - device_id: b738bd7775468792d527ebf3923efd25
               domain: zha
               platform: device
               type: remote_button_short_press
@@ -388,7 +344,7 @@ storage:
             condition: []
             action:
             - type: toggle
-              device_id: 2972f884bca49fd056ae759ef42dc035
+              device_id: f1f01f275e9275151f0c877f3c1115ae
               entity_id: light.master_bedroom
               domain: light
             mode: single
@@ -396,12 +352,12 @@ storage:
             alias: Button 2
             description: ''
             trigger:
-            - device_id: fe3f6c796067284941b4104bcb29dd18
+            - device_id: e7b439d9a828ba025f4d29b3fe42e248
               domain: zha
               platform: device
               type: remote_button_double_press
               subtype: remote_button_double_press
-            - device_id: 108729705d0f7b14b7ba6e7e1cb434ff
+            - device_id: b738bd7775468792d527ebf3923efd25
               domain: zha
               platform: device
               type: remote_button_double_press
@@ -409,7 +365,7 @@ storage:
             condition: []
             action:
             - type: toggle
-              device_id: a32fde61f2cedade5da1bdc8fc2b2309
+              device_id: 939dbf7a6e80c2808b1e2c3d9384e672
               entity_id: switch.hallway_light
               domain: switch
             - service: input_boolean.turn_off
@@ -421,7 +377,7 @@ storage:
             alias: Button 3 (Bedroom)
             description: ''
             trigger:
-            - device_id: fe3f6c796067284941b4104bcb29dd18
+            - device_id: e7b439d9a828ba025f4d29b3fe42e248
               domain: zha
               platform: device
               type: remote_button_long_press
@@ -429,7 +385,7 @@ storage:
             condition: []
             action:
             - type: toggle
-              device_id: 2972f884bca49fd056ae759ef42dc035
+              device_id: f1f01f275e9275151f0c877f3c1115ae
               entity_id: fan.master_bedroom
               domain: fan
             mode: single
@@ -437,7 +393,7 @@ storage:
             alias: Button 3 (Hallway)
             description: ''
             trigger:
-            - device_id: 108729705d0f7b14b7ba6e7e1cb434ff
+            - device_id: b738bd7775468792d527ebf3923efd25
               domain: zha
               platform: device
               type: remote_button_long_press
@@ -445,13 +401,62 @@ storage:
             condition: []
             action:
             - type: toggle
-              device_id: 2972f884bca49fd056ae759ef42dc035
+              device_id: f1f01f275e9275151f0c877f3c1115ae
               entity_id: light.master_bedroom
               domain: light
             - type: toggle
-              device_id: a32fde61f2cedade5da1bdc8fc2b2309
+              device_id: 939dbf7a6e80c2808b1e2c3d9384e672
               entity_id: switch.hallway_light
               domain: switch
+            mode: single
+          - id: '1690599180066'
+            alias: Bathroom Timer
+            description: ''
+            trigger:
+            - type: motion
+              platform: device
+              device_id: 7de37abe9779e350ccc83810a1324690
+              entity_id: f4a59d7badde69ac277850c7f382f703
+              domain: binary_sensor
+            condition: []
+            action:
+            - service: timer.start
+              data:
+                duration: '04'
+              target:
+                entity_id: timer.bathroom_timer
+            mode: restart
+          - id: '1690600114679'
+            alias: Bathroom Light
+            description: ''
+            trigger:
+            - type: motion
+              platform: device
+              device_id: 7de37abe9779e350ccc83810a1324690
+              entity_id: binary_sensor.lumi_lumi_motion_ac02_iaszone_3
+              domain: binary_sensor
+            condition:
+            - condition: state
+              entity_id: input_boolean.bathroom_override
+              state: 'off'
+            - condition: state
+              entity_id: input_boolean.guest
+              state: 'off'
+            action:
+            - type: toggle
+              device_id: 23c4174bebb3afee09bc6a6130412708
+              entity_id: dff0c2bf29b1c1753a294b0f0919d4c8
+              domain: switch
+            - wait_for_trigger:
+              - platform: state
+                entity_id:
+                - timer.bathroom_timer
+                from: active
+                to: idle
+            - service: input_boolean.turn_off
+              data: {}
+              target:
+                entity_id: input_boolean.bathroom_override
             mode: single
       user:
         name: joe
