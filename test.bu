@@ -1,0 +1,143 @@
+variant: fcos
+version: 1.5.0
+passwd:
+  users:
+    - name: joe
+      ssh_authorized_keys:
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINMlyPjoTaGAhEYE1+jnlIYgPbXfP7bkHap7NgEvvZ2p
+      password_hash: $y$j9T$he/M2HTJFb1Qv5Jw9iQq/1$har8VkVOvtXs0ccfwyHfNZSD3lZ8gWUBPZ/QWIyb6N0
+      home_dir: /home/joe
+      groups:
+        - wheel
+      shell: /bin/bash
+storage:
+  links:
+    - path: /etc/localtime
+      target: ../usr/share/zoneinfo/America/Chicago
+    - path: /etc/motd.d/tracker.motd
+      target: /dev/null
+    - path: /home/joe/.config/systemd/user/timers.target.wants/podman-auto-update.timer
+      user:
+        name: joe
+      group:
+        name: joe
+      target: /usr/lib/systemd/user/podman-auto-update.timer
+      hard: false
+  directories:
+    - path: /home/joe/.ha_config
+      overwrite: true
+      mode: 0770
+      user:
+        name: joe
+      group:
+        name: joe
+    - path: /home/joe/.config
+      mode: 0755
+      user:
+        name: joe
+      group:
+        name: joe
+    - path: /home/joe/.config/systemd
+      mode: 0755
+      user:
+        name: joe
+      group:
+        name: joe
+    - path: /home/joe/.config/systemd/user
+      mode: 0755
+      user:
+        name: joe
+      group:
+        name: joe
+    - path: /home/joe/.config/containers
+      mode: 0755
+      user:
+        name: joe
+      group:
+        name: joe
+    - path: /home/joe/.config/containers/systemd
+      mode: 0755
+      user:
+        name: joe
+      group:
+        name: joe
+    - path: /home/joe/.config/systemd/user/timers.target.wants
+      mode: 0755
+      user:
+        name: joe
+      group:
+        name: joe
+    - path: /home/joe/.config/systemd/user/podman-auto-update.timer.d
+      mode: 0755
+      user:
+        name: joe
+      group:
+        name: joe
+  files:
+    - path: /etc/udev/rules.d/usb.rules
+      contents:
+        inline: |
+          KERNEL=="ttyUSB0", SUBSYSTEM=="tty", OWNER="joe"
+    - path: /etc/zincati/config.d/55-updates-strategy.toml
+      contents:
+        inline: |
+          [updates]
+          strategy = "periodic"
+          [updates.periodic]
+          time_zone = "America/Chicago"
+          [[updates.periodic.window]]
+          days = [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ]
+          start_time = "05:40"
+          length_minutes = 10
+    - path: /home/joe/.config/systemd/user/podman-auto-update.timer.d/override.conf
+      mode: 0644
+      contents:
+        inline: |
+          [Timer]
+          OnCalendar=
+          OnCalendar=*-*-* 05:00:00
+          RandomizedDelaySec=0
+      user:
+        name: joe
+      group:
+        name: joe
+    - path: /var/lib/systemd/linger/joe
+      mode: 0644
+    - path: /home/joe/.config/containers/systemd/homeassistant.container
+      mode: 0644
+      contents:
+        inline: |
+          [Unit]
+          Description=Home Assistant container
+          After=network-online.target
+          
+          [Container]
+          Image=ghcr.io/home-assistant/home-assistant:stable
+          AddDevice=/dev/ttyUSB0:rw
+          ContainerName=homeassistant
+          Environment=TZ=America/Chicago
+          Label=io.containers.autoupdate=registry
+          Network=host
+          Volume=/home/joe/.ha_config:/config:Z
+          
+          [Service]
+          TimeoutStartSec=200
+          Restart=always
+          
+          [Install]
+          WantedBy=default.target
+      user:
+        name: joe
+      group:
+        name: joe
+systemd:
+  units:
+    - name: setsebool.service
+      enabled: true
+      contents: |
+        [Service]
+        Type=oneshot
+        ExecStart=setsebool container_use_devices true
+        RemainAfterExit=yes
+        [Install]
+        WantedBy=multi-user.target
