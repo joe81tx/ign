@@ -1,5 +1,5 @@
 variant: fcos
-version: 1.4.0
+version: 1.5.0
 passwd:
   users:
     - name: joe
@@ -7,6 +7,8 @@ passwd:
         - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINMlyPjoTaGAhEYE1+jnlIYgPbXfP7bkHap7NgEvvZ2p
       password_hash: $y$j9T$he/M2HTJFb1Qv5Jw9iQq/1$har8VkVOvtXs0ccfwyHfNZSD3lZ8gWUBPZ/QWIyb6N0
       home_dir: /home/joe
+      groups:
+        - wheel
       shell: /bin/bash
 storage:
   links:
