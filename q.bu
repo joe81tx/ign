@@ -116,7 +116,7 @@ storage:
           AddDevice=/dev/ttyUSB0:rw
           ContainerName=homeassistant
           Environment=TZ=America/Chicago
-          Label=io.containers.autoupdate=registry
+          AutoUpdate=registry
           Network=host
           Volume=/home/joe/.ha_config:/config:Z
           
@@ -141,7 +141,7 @@ storage:
           [Container]
           Image=docker.io/cloudflare/cloudflared:latest
           ContainerName=cloudflare
-          Label=io.containers.autoupdate=registry
+          AutoUpdate=registry
           Exec=tunnel run --token eyJhIjoiYjQyYTZkNzJmNmJkZDNhNDdmOGM0ODQ3ZDhhMWE2N2YiLCJ0IjoiODkwZTc4MjktMTNjZC00ODkzLTg1YzItMzIyNzFiY2JiY2ZjIiwicyI6Ik4yUmlNVEF4T0dJdFlUUmhPQzAwTjJKaExXSTJPRFF0WWpOaU9XSTRNREJsTldFNSJ9
           
           [Service]
