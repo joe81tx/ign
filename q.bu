@@ -142,6 +142,7 @@ storage:
           Image=docker.io/cloudflare/cloudflared:latest
           ContainerName=cloudflare
           AutoUpdate=registry
+          Network=host
           Exec=tunnel run --token eyJhIjoiYjQyYTZkNzJmNmJkZDNhNDdmOGM0ODQ3ZDhhMWE2N2YiLCJ0IjoiODkwZTc4MjktMTNjZC00ODkzLTg1YzItMzIyNzFiY2JiY2ZjIiwicyI6Ik4yUmlNVEF4T0dJdFlUUmhPQzAwTjJKaExXSTJPRFF0WWpOaU9XSTRNREJsTldFNSJ9
           
           [Service]
