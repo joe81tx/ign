@@ -7,6 +7,8 @@ passwd:
         - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINMlyPjoTaGAhEYE1+jnlIYgPbXfP7bkHap7NgEvvZ2p
       password_hash: $y$j9T$he/M2HTJFb1Qv5Jw9iQq/1$har8VkVOvtXs0ccfwyHfNZSD3lZ8gWUBPZ/QWIyb6N0
       home_dir: /home/joe
+      groups:
+        - wheel
       shell: /bin/bash
 storage:
   links:
@@ -24,55 +26,55 @@ storage:
   directories:
     - path: /home/joe/.ha_config
       overwrite: true
-      mode: 0660
+      mode: 0755
       user:
         name: joe
       group:
         name: joe
     - path: /home/joe/.config
-      mode: 0660
+      mode: 0755
       user:
         name: joe
       group:
         name: joe
     - path: /home/joe/.config/systemd
-      mode: 0660
+      mode: 0755
       user:
         name: joe
       group:
         name: joe
     - path: /home/joe/.config/systemd/user
-      mode: 0660
+      mode: 0755
       user:
         name: joe
       group:
         name: joe
     - path: /home/joe/.config/containers
-      mode: 0660
+      mode: 0755
       user:
         name: joe
       group:
         name: joe
     - path: /home/joe/.config/containers/systemd
-      mode: 0660
+      mode: 0755
       user:
         name: joe
       group:
         name: joe
     - path: /home/joe/.config/systemd/user/timers.target.wants
-      mode: 0660
+      mode: 0755
       user:
         name: joe
       group:
         name: joe
     - path: /home/joe/.config/systemd/user/podman-auto-update.timer.d
-      mode: 0660
+      mode: 0755
       user:
         name: joe
       group:
         name: joe
     - path: /home/joe/.local/share/containers/storage/volumes
-      mode: 0660
+      mode: 0755
       user:
         name: joe
       group:
@@ -108,7 +110,7 @@ storage:
     - path: /var/lib/systemd/linger/joe
       mode: 0644
     - path: /home/joe/.config/containers/systemd/homeassistant.container
-      mode: 0640
+      mode: 0644
       contents:
         inline: |
           [Unit]
@@ -135,7 +137,7 @@ storage:
       group:
         name: joe
     - path: /home/joe/.config/containers/systemd/cloudflare.container
-      mode: 0640
+      mode: 0644
       contents:
         inline: |
           [Unit]
